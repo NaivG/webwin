@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="author" content="modify:naivg,original:marduc812">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/ico" href="./ylui/favicon.ico">
+    <title>Ylui Login</title>
+    <script src="./js/jquery-latest.js"></script>
+    <script src="./config.js"></script>
+    <style>
+         :root {
+            --trans-back-color: rgba(0, 0, 0, 0.3);
+            --windows-text-color: #ffffff;
+            --blur-amount: 20px;
+        }
+        
+        body {
+            color: var(--windows-text-color);
+            background: #051b2e;
+        }
+        
+        .background-img {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            color: var(--windows-text-color);
+            background: url('./ylui/res/img/wallpapers/bg1.jpg') no-repeat center center fixed;
+            background-size: cover;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            z-index: 1;
+        }
+        
+        .content {
+            z-index: 2;
+            font-family: Segoe UI;
+            font-weight: 100;
+            position: fixed;
+        }
+        
+        .blurred-back {
+            animation-name: blur;
+            animation-duration: 0.5s;
+            animation-iteration-count: 1;
+            animation-fill-mode: forwards;
+        }
+        
+        @-webkit-keyframes blur {
+            0% {
+                -webkit-filter: blur(0px);
+            }
+            100% {
+                -webkit-filter: blur(var(--blur-amount));
+            }
+        }
+        
+        @-moz-keyframes blur {
+            0% {
+                -moz-filter: blur(0px);
+            }
+            100% {
+                -moz-filter: blur(var(--blur-amount));
+            }
+        }
+        
+        @keyframes blur {
+            0% {
+                filter: blur(0px);
+            }
+            100% {
+                filter: blur(var(--blur-amount));
+            }
+        }
+        
+        .hideContent {
+            animation-name: hideContent;
+            animation-duration: 200ms;
+            animation-iteration-count: 1;
+            animation-fill-mode: forwards;
+            -moz-animation-name: hideContent;
+            -moz-animation-duration: 200ms;
+            -moz-animation-iteration-count: 1;
+            -moz-animation-fill-mode: forwards;
+        }
+        
+        @keyframes hideContent {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+                top: 200px;
+            }
+        }
+        
+        .timeGroup {
+            position: fixed;
+            left: 3%;
+            top: 70%;
+        }
+        
+        .textFrame {
+            padding: 7px;
+            width: 300px;
+        }
+        
+        .textFrame:hover {
+            background: var(--trans-back-color);
+        }
+        
+        .textFrameContent {
+            margin: 0px;
+        }
+        
+        .timeText {
+            font-size: 140px;
+            margin: 0px;
+        }
+        
+        .dateText {
+            margin: -23px 5px;
+            font-size: 50px;
+            font-weight: 300px;
+        }
+        
+        .not-selectable {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            cursor: default;
+        }
+        
+        .not-selectable-hoverable {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            cursor: pointer;
+        }
+        
+        .not-selectable-clickable {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            cursor: pointer;
+            color: white;
+        }
+        
+        .not-selectable-clickable:hover {
+            color: rgb(209, 203, 203);
+        }
+        
+        .loginViewDiv {
+            text-align: -webkit-center;
+            text-align: -moz-center;
+        }
+        
+        .loginForm {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            display: grid;
+            place-items: center;
+            visibility: hidden;
+        }
+        
+        .loginInnerDiv {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .formView {
+            text-align: center;
+        }
+        
+        .userInput {
+            margin-top: 25px;
+            height: 35px;
+            width: 400px;
+            border: 2px solid gray;
+            font-size: medium;
+            padding-left: 8px;
+        }
+        
+        .userInput:focus-visible {
+            outline: white;
+        }
+        
+        .UsernameText {
+            margin: 0px 5px;
+            font-size: 50px;
+            font-weight: 300px;
+            text-align: center;
+            font-weight: 400px;
+        }
+        
+        .userLogoBorder {
+            margin-bottom: 10px;
+            width: 120px;
+            height: 120px;
+            background: white;
+            border-radius: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .userLogo {
+            width: 60px;
+            height: 60px;
+        }
+        
+        .searchIcon {
+            width: 20px;
+            height: 20px;
+            padding: 5px;
+            border-radius: 20px;
+            background: var(--trans-back-color);
+        }
+        
+        .searchText {
+            margin-top: -42px;
+            margin-left: 40px;
+        }
+        
+        .infodiv {
+            position: absolute;
+            display: grid;
+            grid-template-columns: 30px 1fr;
+            margin: 20px;
+            z-index: 3;
+        }
+        
+        .centerinfodiv {
+            position: absolute;
+            display: grid;
+            grid-template-columns: 30px 1fr;
+            margin: 20px;
+            z-index: 4;
+        }
+        
+        .smallText {
+            font-size: large;
+        }
+        
+        .windowsButton {
+            background: rgba(194, 192, 192, 0.3);
+            width: 120px;
+            height: 35px;
+            color: white;
+            border-style: none;
+        }
+        
+        .windowsButton:hover {
+            color: white;
+            border-width: 2px;
+            border-style: solid;
+            border-color: rgb(180, 180, 180);
+        }
+        
+        .windowsButton:active {
+            background: rgb(180, 180, 180);
+            color: white;
+            border-color: rgb(180, 180, 180);
+        }
+        
+        .rotating-img {
+            margin-top: 20px;
+            animation-name: rotation;
+            animation-duration: 4s;
+            animation-iteration-count: infinite;
+            animation-fill-mode: forwards;
+            -moz-animation-name: rotation;
+            -moz-animation-duration: 4s;
+            -moz-animation-iteration-count: infinite;
+            -moz-animation-fill-mode: forwards;
+        }
+        
+        @keyframes rotation {
+            from {
+                -ms-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+            to {
+                -ms-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+
+    <script>
+        var failedLoginAttempt = false;
+        var typedPass = false;
+        var loggingUrl = './index.html?pwd='
+
+
+        document.onclick = event => {
+            if (event === undefined) event = window.event;
+            let target = 'target' in event ? event.target : event.srcElement;
+            showLogin();
+        };
+
+        document.onkeypress = e => {
+            e = e || window.event;
+            if (!typedPass) {
+                showLogin();
+                typedPass = true
+            } else {
+                if (e.keyCode == 13) {
+                    passwordTyped()
+                }
+            }
+
+        };
+
+        function showLoading() {
+            console.log('called');
+            document.getElementById('loadingAnimation').style.display = 'block';
+            document.getElementById('passwordForm').style.display = 'none'
+        }
+
+
+        function showLogin() {
+            // content is hidden
+            document.getElementById('loadingAnimation').style.display = 'none';
+            document.getElementById('back-img').classList.add('blurred-back');
+            document.getElementById('timeItems').classList.add('hideContent');
+            document.getElementById('infoField').classList.add('hideContent');
+            document.getElementById('loginForm').style.visibility = 'visible'
+            document.getElementById('passwordField').focus();
+        }
+
+        function showWrongPassword() {
+            //if (!failedLoginAttempt) {
+            document.getElementById('loadingAnimation').style.display = 'none';
+            document.getElementById('passwordForm').style.display = 'none';
+            document.getElementById('wrongPasswordField').style.display = 'block';
+            //} else {
+            //    if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement) {
+            //        document.exitFullscreen();
+            //    }
+            //    close();
+
+            //}
+        }
+
+        function passwordTyped() {
+            showLoading()
+            var pwd = password;
+            console.log(pwd);
+            var typedText = document.getElementById("passwordField").value;
+            if (typedText == pwd) {
+                console.log(pwd);
+                location.href = "ylui/index.html";
+            } else {
+                showWrongPassword();
+            };
+            //fetch(loggingUrl + typedText, {
+            //        mode: 'no-cors'
+            //    })
+            //    .then(x => {
+            //showWrongPassword()
+            //    }).catch(() => {
+            // avoid application crash
+            //        showWrongPassword()
+            //    });
+
+        }
+
+        function wrongPasswordOKClicked() {
+            //failedLoginAttempt = true
+            document.getElementById('loadingAnimation').style.display = 'none';
+            document.getElementById('wrongPasswordField').style.display = 'none';
+            document.getElementById('passwordForm').style.display = 'block';
+            document.getElementById('passwordField').value = ''
+        }
+    </script>
+</head>
+
+<body>
+    <div class='background-img' id='back-img'></div>
+    <div class='content'>
+        <section class='timeGroup' id='timeItems'>
+            <div>
+                <p class='timeText not-selectable' id='currentTime'>8:20</p>
+            </div>
+            <div>
+                <p class='dateText not-selectable' id='currentDate'>Thursday, 20 April</p>
+            </div>
+            <script>
+                var timeNow = new Date().toLocaleTimeString('zh-CN', {
+                    hour12: false,
+                    hour: "numeric",
+                    minute: "numeric"
+                });
+                var dateNow = new Date().toLocaleDateString('zh-CN', {
+                    weekday: 'long',
+                    month: 'long',
+                    day: 'numeric'
+                })
+                document.getElementById('currentTime').innerHTML = timeNow;
+                document.getElementById('currentDate').innerHTML = dateNow;
+            </script>
+        </section>
+
+        <section class='infodiv' id='infoField'>
+            <div>
+                <div class='smallIconsFrame not-selectable-hoverable'><img src="data:image/png;base64, AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA////LP///5D////U////9P////T////W////kv///ywAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///8G////kv////z/////////0v///8b////I////0v/////////8////lP///wgAAAAAAAAAAAAAAAD///8I////uv///97////I////2v///xD///+e////nv///xD////Y////yv///97///+6////BgAAAAAAAAAA////lP////j///9u////+P///47///9O////vP///7z///9O////jv////j///9u////+P///5IAAAAA////Kv////z////u////+P////r////u////7v////j////4////7v///+7////6////+P///+7////8////LP///5D///+6AAAAAP///6j///+WAAAAAAAAAAD///+e////ngAAAAAAAAAA////lv///6oAAAAA////uP///5D////U////bAAAAAD////Q////bAAAAAAAAAAA////nv///54AAAAAAAAAAP///2r////QAAAAAP///2z////U////8v///7z///+e////9P///8D///+e////nv///9r////a////nv///57////A////9P///57///+6////8v////L///+6////nv////T////A////nv///57////a////2v///57///+e////wP////T///+e////uv////L////S////bgAAAAD////O////bAAAAAAAAAAA////nv///54AAAAAAAAAAP///2r////QAAAAAP///2z////U////jv///7oAAAAA////qP///5YAAAAAAAAAAP///57///+eAAAAAAAAAAD///+W////qAAAAAD///+6////kP///yr////6////8P////j////6////8P////D////4////+P////D////w////+v////j////w/////P///yoAAAAA////kv////j///9u////9v///47///9M////uv///7z///9M////jv////j///9u////+P///5IAAAAAAAAAAP///wj///+6////4P///8r////a////EP///57///+e////EP///9r////K////4P///7j///8GAAAAAAAAAAAAAAAA////Bv///5L////8/////////9T////I////yP///9L//////////P///5D///8GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA////Kv///47////S////8v////D////S////kP///yoAAAAAAAAAAAAAAAAAAAAA+B8AAOAHAADCQwAAkkkAAIABAAAmZAAAbnYAAAAAAAAAAAAAbnYAACZkAACAAQAAkkkAAMJDAADgBwAA+B8AAA=="
+                        class='searchIcon'></div>
+                <div class='not-selectable-hoverable textFrame searchText'>
+                    <p class='textFrameContent'>Meet people who are changing the world with a little help from technology.</p>
+                </div>
+            </div>
+        </section>
+
+
+        <section id='loginForm' class='loginForm'>
+            <div class='loginViewDiv'>
+                <div class='userLogoBorder'>
+                    <img src='data:image/png;base64, AAABAAEARkoAAAEAIACdBgAAFgAAAIlQTkcNChoKAAAADUlIRFIAAABGAAAASggDAAAAMTLSzQAAAAFzUkdCAdnJLH8AAAAJcEhZcwAACxMAAAsTAQCanBgAAAHgUExURQAAAMvLy42NjWxsbFZWVkxMTIyMjMrKyqioqFtbWxgYGAAAAJqamjMzMzIyMsHBwUNDQwoKChAQEDQ0NHx8fI6OjmNjYwICAgQEBDc3N5ycnOPj452dnQEBATg4OMTExDk5OWdnZwgICIuLixMTE6+vrxQUFMnJyRYWFhISEr6+vlBQUAcHB6qqqry8vHh4eEVFRSUlJdXV1QMDA5+fn9bW1nJycicnJ3l5eQUFBdHR0dDQ0B4eHjw8PKurq1VVVYGBgWBgYIKCgl9fX4ODg5SUlLGxsTY2NtPT0wwMDMLCwj8/P2ZmZoeHhxkZGeLi4llZWd/f3wkJCWtra4mJiWpqat7e3iQkJKGhobq6uoaGhpKSklRUVBEREZOTk2VlZbi4uLm5uRwcHA8PD09PT1xcXN3d3S0tLSwsLL29vVdXV0ZGRkJCQlhYWGhoaHFxcSYmJnd3dy8vL+Tk5DAwMCgoKCEhIYWFhdfX15mZmQsLCyMjI56enpiYmA4ODktLS9LS0l1dXXV1dXR0dIqKig0NDcPDw8XFxb+/vyIiIsjIyAYGBklJSTs7OxoaGuXl5bu7u6ysrCoqKisrK5ubm6Ojo+Dg4OHh4aSkpFFRUaenp9jY2K6uriAgIEFBQbOzs8iDmR8AAACgdFJOUwD//////////////////////////////////0D///////////////////////////////////////////////////////////////////9Q/4D/////kP///////////////////6D///////////////8w////////////////////////////////////IP///////3Bg////8P////+RBmDWAAADqklEQVR4nOWX+SMbQRTHB3FEXBHE0VQpdYUgGrRU3OKm6o6b1l1VR2kdLVU31dNR/2rf22yQZHdmd3/1ftp57/s+szuzO+8tIffPvLx9VL6+Kh8/f+WMAHWg5sYC1QGKIEHBGjcLCZINCQ1zh6CFhcqjeGsdeeE6dURkZIRaF+4Ya73lUKL0mBMdExvn9MQ9iIlGnz5KOkVlwIyH8a7e+EfoNaikUhKQkvjYM+CXiJwEaZRYfKKkZKFQ8hN8rlgplJRUkKalCwfT0yCYmiIBkwFCY6ZYNNMI4Qw2JQs3xCQeN+EWZjEx2SDLoQlyQJDNouSaYS/yaIo82EfzUwbGAnPl0yX5ILEwMCGgKaBLCkASzMAUajSFz+iS56ihS7xgpiLGTKQIRF5URSYoilmYYhC9oCoiQVHCwpSAKJKqsIKilIUpBZGVqigDRTkLUw6iCqqiUsoXg19dJVVRBYpqFqYaRFVURQ2WEhYGy04NXWKDY6mWLqmFY83GmKkOZqqnS+pBUsfANICmkS5pBEkDA9NkY+1mBQhsTQwMacZFbhGPt+ACN7MoJLcVZJRapIJwK+vUAnuJRa1NLNqG0VdsCmnvAKG5UzjYCWespqNdAoZ0FeLh3y0U6sayUdglhUJID9cI9HoGerlmoEcaBU4djmO3unqtdo5CP2lcrM/IdTNJ/QNOz0B9Eucy9kmnEDI4xPdXw7qR0dER3TA/HBqUQ4H9GhVq2tRj8ij+ptdCmDcmOY3t+IRWCIKmnRiXCPGaNPM5BnvO1PTM7OzM9NRbu4F3mifpNYq3Of5OEt9Zxudv3fPplveJ/B3NMSG1Cw7p4tKyZ3C5e9ERXWD0xx9WONnqRzFB3ionWPlEo1i4VVlbomm617gVmhVXlOMy6tc36Hdcs47fikG0Km7iNNFWOgTNyjXsm8LBz9wDiRw0rtbJPdgXodAWrss2o0Y57es2rs+WZ2AHA1qRrtrTvuHbZdvx8O/iukg819C6cH123b3Ys2jKpFMcPYx7L7S3D74DORRCDiBlf8/FdQiuo2N5mOMjSDq866nCF0rW8YiGPZX+bqODP7msJkHA6iBNdzs8gZvRn8rHnGLeyc0wAajf5VMIOYPEGedgDJuEH0owsZDY6CzFP2Ew/EsJ5jcWnj/8oF8j6b9PyP5Caj9/jU94rgxzDqln/DV8HcYLZZgLqNLRjstLIF4poxByBcmX3BX+bkwpxfzTOH9DNq6vryVVMCHzh+QNpcn3w/4D3auLBlGeX58AAAAASUVORK5CYII='
+                        class='userLogo'>
+                </div>
+                <p class='not-selectable UsernameText'>Administrator</p>
+                <form class='formView' onsubmit="return false" id='passwordForm'>
+                    <input class='userInput' placeholder="Password" type="password" id='passwordField'>
+
+                    <p class='not-selectable-clickable smallText'>忘记密码</p>
+                </form>
+                <div style='display: none' id='loadingAnimation'>
+                    <img class='rotating-img' src='data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAADIAAAAyBAMAAADsEZWCAAAAAXNSR0IB2cksfwAAAAlwSFlzAAALEwAACxMBAJqcGAAAABJQTFRFAAAA////////////////////PlKtOgAAAAZ0Uk5TABCv/8CwpU3JbwAAAIxJREFUeJxjYCAGCBkJ4JBxNg7AIWNsbECyHlFTkD2Myoo45FmMTXE4itnYGIcFKHpQHMUYHEi8o2gGyA9bbDoherDphHiD/FgZnABbGEDSDzb/QNICtjCApB/cerCFAUr6GQBAVMpBy0xIfkfJGCh6UDITit/R9CABAoEBcStpKRbiVmyxRSiVU5ZiAZA0HQJVAVb9AAAAAElFTkSuQmCC'>
+                </div>
+                <div id='wrongPasswordField' style="display: none">
+                    <p>密码不正确。请再试一次。</p>
+                    <button class='windowsButton' id='wrongPasswordOK' onclick="wrongPasswordOKClicked()">确定</button>
+                </div>
+
+            </div>
+        </section>
+    </div>
+</body>
+
+</html>
